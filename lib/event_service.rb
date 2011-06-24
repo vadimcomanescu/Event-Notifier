@@ -1,3 +1,5 @@
+require 'event'
+require 'event_subscriber'
 
 class EventService
 	attr_accessor :subscriptions
