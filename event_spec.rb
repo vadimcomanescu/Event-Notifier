@@ -1,37 +1,8 @@
-class Event
-	attr_accessor :severity, :timestamp, :message
-	def initialize severity, timestamp, message
-		@severity = severity
-		@timestamp = timestamp
-		@message = message
-	end
-end
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+require "event"
+require "event_service"
+require "event_subscriber"
 
-class EventService
-	attr_accessor :subscriptions
-
-	def initialize
-		@subscriptions = []
-	end
-
-	def add_subscription subscription
-		@subscriptions << subscription unless @subscriptions.include? subscription
-	end
-
-	def unsubscribe subscription
-		@subscriptions.delete(subscription)
-	end
-
-	def publish event
-		@subscriptions.each {|subscription| subscription.last.notify event if event.class.name.eql?(subscription.first)}
-	end
-end
-
-class EventSubscriber
-	def notify event
-	end
-
-end
 RSpec::Matchers.define :include_only_once do |expected|
 	match do |actual|
 		actual.count(expected) == 1
@@ -43,6 +14,11 @@ describe "Event" do
 		event.severity.should == "low"
 		event.timestamp.should == "1980-01-24 23:45"
 		event.message.should == "message"
+	end
+
+	it "should have a string representation as its containing messagge" do
+		event = Event.new("low", "1980", "message")
+		event.to_s.should == "message"
 	end
 end
 
